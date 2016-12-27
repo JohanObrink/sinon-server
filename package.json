@@ -1,0 +1,51 @@
+{
+  "name": "sinon-server",
+  "version": "0.0.0",
+  "description": "A mock server to answer calls to external systems controlled by a sinon stub",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "eslint gulpfile.js lib/**/*.js test/**/*.js && mocha test/**/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/JohanObrink/sinon-server.git"
+  },
+  "keywords": [
+    "test",
+    "testing",
+    "sinon",
+    "mock",
+    "stub",
+    "server",
+    "external",
+    "dependencies"
+  ],
+  "author": "Johan Öbrink <johan.obrink@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JohanObrink/sinon-server/issues"
+  },
+  "homepage": "https://github.com/JohanObrink/sinon-server#readme",
+  "dependencies": {
+    "lodash": "^4.16.6",
+    "sinon": "^1.17.6"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "eslint": "^3.9.1",
+    "eslint-config-standard": "^6.2.1",
+    "eslint-plugin-promise": "^3.3.1",
+    "eslint-plugin-standard": "^2.0.1",
+    "gulp": "^3.9.1",
+    "gulp-eslint": "^3.0.1",
+    "gulp-mocha": "^3.0.1",
+    "lodash": "^4.16.6",
+    "mocha": "^3.1.2",
+    "proxyquire": "^1.7.10",
+    "sinon": "^1.17.6",
+    "sinon-as-promised": "^4.0.2",
+    "sinon-chai": "^2.8.0",
+    "supertest": "^2.0.1",
+    "supertest-as-promised": "^4.0.2"
+  }
+}
