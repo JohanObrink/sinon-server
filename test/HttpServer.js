@@ -23,7 +23,7 @@ describe('HttpServer', () => {
   afterEach(() => {
     console.warn.restore()
   })
-  it.only('calls through', () => {
+  it('calls through', () => {
     const all = Object.assign(spy(), {__name: 'all'})
     const getIndex = Object.assign(spy(), {__name: 'getIndex'})
     const secondCall = Object.assign(spy(), {__name: 'secondCall'})
@@ -49,11 +49,11 @@ describe('HttpServer', () => {
       }
     ])
     .then(() => {
-      expect(all.callCount).to.equal(4)
-      expect(all).calledWith('GET', '/').and.calledWith('POST', '/')
+      expect(all.callCount, 'all').to.equal(4)
+      expect(all, 'all').calledWith('GET', '/').and.calledWith('POST', '/')
 
-      expect(getIndex.callCount).to.equal(3)
-      expect(getIndex).calledWith('GET', '/').and.not.calledWith('POST', '/')
+      expect(getIndex.callCount, 'getIndex').to.equal(3)
+      expect(getIndex, 'getIndex').calledWith('GET', '/').and.not.calledWith('POST', '/')
 
       expect(secondCall, 'secondCall').calledOnce.calledWith('POST', '/')
 
