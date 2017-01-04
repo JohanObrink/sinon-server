@@ -28,7 +28,8 @@
   "homepage": "https://github.com/JohanObrink/sinon-server#readme",
   "dependencies": {
     "lodash": "^4.16.6",
-    "sinon": "^1.17.6"
+    "sinon": "^1.17.6",
+    "xml2js": "^0.4.17"
   },
   "devDependencies": {
     "chai": "^3.5.0",
@@ -45,6 +46,7 @@
     "proxyquire": "^1.7.10",
     "sinon": "^1.17.6",
     "sinon-as-promised": "^4.0.2",
-    "sinon-chai": "^2.8.0"
+    "sinon-chai": "^2.8.0",
+    "soap": "^0.18.0"
   }
 }
