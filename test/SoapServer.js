@@ -1,7 +1,7 @@
 const chai = require('chai')
 const expect = chai.expect
 const {SoapServer} = require(`${process.cwd()}/lib/`)
-const {spy, stub, match} = require('sinon')
+const {stub} = require('sinon')
 const {createClient} = require('soap')
 const {join} = require('path')
 
@@ -83,13 +83,57 @@ describe('SoapServer', () => {
       console.warn.restore()
       return server.stop()
     })
-    it.only('calls the correct method', (done) => {
-      server.withArgs('GetCountriesAvailable').resolves({
-        status: 200,
-        result: {}
-      })
+    it('calls the correct method', (done) => {
+      const GetCountriesAvailableResult = {
+        CountryCode: [
+          {
+            Code: 'Canada',
+            Description: 'Canada'
+          },
+          {
+            Code: 'GreatBritain',
+            Description: 'Great Britain and Wales'
+          }
+        ]
+      }
+      const response = {
+        GetCountriesAvailableResponse: {
+          '@xmlns': 'http://localhost:1337/HolidayService_v2/',
+          GetCountriesAvailableResult
+        }
+      }
+      server
+        .withArgs('GetCountriesAvailable')
+        .resolves({
+          response,
+          status: 200
+        })
       client.GetCountriesAvailable(null, (err, res) => {
+        expect(res)
+          .to.eql({GetCountriesAvailableResult})
+
         done(err)
+      })
+    })
+    it('throws correct errors', (done) => {
+      server
+        .withArgs('GetCountriesAvailable')
+        .rejects(Object.assign({message: 'some description'}))
+      client.GetCountriesAvailable(null, (err, res) => {
+        expect(err).to.be.instanceof(Error)
+        expect(err.message)
+          .to.equal('soap:Server.InternalError: some description')
+
+        done()
+      })
+    })
+    it('throws NotImplemented error for unimplemented methods', (done) => {
+      client.GetCountriesAvailable(null, (err, res) => {
+        expect(err).to.be.instanceof(Error)
+        expect(err.message)
+          .to.equal(`soap:Server.NotImplemented: The method 'GetCountriesAvailable' is not implemented`)
+
+        done()
       })
     })
   })
