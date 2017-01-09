@@ -73,7 +73,6 @@ describe('SoapServer', () => {
               done(err)
             } else {
               client = _client
-              // client.on('request', (xml) => console.log(xml))
               done()
             }
           })
@@ -84,6 +83,62 @@ describe('SoapServer', () => {
       return server.stop()
     })
     it('calls the correct method', (done) => {
+      const response = {
+        GetCountriesAvailableResponse: {
+          '@xmlns': 'http://localhost:1337/HolidayService_v2/',
+          GetCountriesAvailableResult: {}
+        }
+      }
+      server
+        .withArgs('GetCountriesAvailable')
+        .resolves(response)
+      client.GetCountriesAvailable(null, (err, res) => {
+        expect(server.stub)
+          .calledWith('GetCountriesAvailable')
+
+        done(err)
+      })
+    })
+    it('calls the correct method with data', (done) => {
+      const response = {
+        GetHolidaysAvailableResponse: {
+          '@xmlns': 'http://localhost:1337/HolidayService_v2/',
+          GetHolidaysAvailableResult: {}
+        }
+      }
+      server
+        .withArgs('GetHolidaysAvailable', 'Canada')
+        .resolves(response)
+      client.GetHolidaysAvailable('Canada', (err, res) => {
+        expect(server.stub)
+          .calledWith('GetHolidaysAvailable', 'Canada')
+
+        done(err)
+      })
+    })
+    it('calls the correct method with complex data', (done) => {
+      const response = {
+        GetHolidayDateResponse: {
+          '@xmlns': 'http://localhost:1337/HolidayService_v2/',
+          GetHolidayDateResult: new Date('2017-01-01T00:00:00.000Z')
+        }
+      }
+      const args = {
+        countryCode: 'Canada',
+        holidayCode: 'NEW-YEARS-DAY-ACTUAL',
+        year: '2017'
+      }
+      server
+        .withArgs('GetHolidayDate', args)
+        .resolves(response)
+      client.GetHolidayDate(args, (err, res) => {
+        expect(server.stub)
+          .calledWith('GetHolidayDate', args)
+
+        done(err)
+      })
+    })
+    it('returns the correct response from object', (done) => {
       const GetCountriesAvailableResult = {
         CountryCode: [
           {
@@ -104,10 +159,31 @@ describe('SoapServer', () => {
       }
       server
         .withArgs('GetCountriesAvailable')
-        .resolves({
-          response,
-          status: 200
-        })
+        .resolves(response)
+      client.GetCountriesAvailable(null, (err, res) => {
+        expect(res)
+          .to.eql({GetCountriesAvailableResult})
+
+        done(err)
+      })
+    })
+    it('returns the correct response from string', (done) => {
+      const GetCountriesAvailableResult = {
+        CountryCode: [
+          {
+            Code: 'Canada',
+            Description: 'Canada'
+          },
+          {
+            Code: 'GreatBritain',
+            Description: 'Great Britain and Wales'
+          }
+        ]
+      }
+      const response = '<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><GetCountriesAvailableResponse xmlns="http://localhost:1337/HolidayService_v2/"><GetCountriesAvailableResult><CountryCode><Code>Canada</Code><Description>Canada</Description></CountryCode><CountryCode><Code>GreatBritain</Code><Description>Great Britain and Wales</Description></CountryCode></GetCountriesAvailableResult></GetCountriesAvailableResponse></soap:Body></soap:Envelope>'
+      server
+        .withArgs('GetCountriesAvailable')
+        .resolves(response)
       client.GetCountriesAvailable(null, (err, res) => {
         expect(res)
           .to.eql({GetCountriesAvailableResult})
@@ -118,7 +194,7 @@ describe('SoapServer', () => {
     it('throws correct errors', (done) => {
       server
         .withArgs('GetCountriesAvailable')
-        .rejects(Object.assign({message: 'some description'}))
+        .rejects({message: 'some description'})
       client.GetCountriesAvailable(null, (err, res) => {
         expect(err).to.be.instanceof(Error)
         expect(err.message)
