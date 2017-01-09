@@ -1,6 +1,6 @@
 {
   "name": "sinon-server",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "A mock server to answer calls to external systems controlled by a sinon stub",
   "main": "lib/index.js",
   "scripts": {
