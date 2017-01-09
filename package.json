@@ -18,7 +18,9 @@
     "stub",
     "server",
     "external",
-    "dependencies"
+    "dependencies",
+    "http",
+    "soap"
   ],
   "author": "Johan Öbrink <johan.obrink@gmail.com>",
   "license": "MIT",
