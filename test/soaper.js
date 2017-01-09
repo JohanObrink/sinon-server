@@ -1,6 +1,6 @@
 const chai = require('chai')
 const expect = chai.expect
-const {createResponse, createErrorResponse} = require(`${process.cwd()}/lib/soaper`)
+const {createResponse, createErrorResponse, unpackArguments} = require(`${process.cwd()}/lib/soaper`)
 
 describe('soaper', () => {
   describe('#createResponse', () => {
@@ -42,6 +42,40 @@ describe('soaper', () => {
 </soap:Body></soap:Envelope>`
       const result = createErrorResponse(error)
       expect(result).to.equal(expected)
+    })
+  })
+  describe('#unpackArguments', () => {
+    it('unpacks a complex object structure', () => {
+      const payload = {
+        '$': {
+          'xmlns': 'http://www.webserviceX.NET/'
+        },
+        L: [
+          {
+            Latitude: ['0'],
+            Longitude: ['0'],
+            SunSetTime: ['0'],
+            SunRiseTime: ['0'],
+            TimeZone: ['0'],
+            Day: ['0'],
+            Month: ['0'],
+            Year: ['0']
+          }
+        ]
+      }
+      const expected = {
+        L: {
+          Latitude: '0',
+          Longitude: '0',
+          SunSetTime: '0',
+          SunRiseTime: '0',
+          TimeZone: '0',
+          Day: '0',
+          Month: '0',
+          Year: '0'
+        }
+      }
+      expect(unpackArguments(payload)).to.eql(expected)
     })
   })
 })

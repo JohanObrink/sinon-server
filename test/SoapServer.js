@@ -58,7 +58,7 @@ describe('SoapServer', () => {
         })
     })
   })
-  describe('calls', () => {
+  describe('holiday', () => {
     let server, client
     beforeEach((done) => {
       server = new SoapServer({
@@ -210,6 +210,67 @@ describe('SoapServer', () => {
           .to.equal(`soap:Server.NotImplemented: The method 'GetCountriesAvailable' is not implemented`)
 
         done()
+      })
+    })
+  })
+  describe('sunsetriseservice', () => {
+    let server, client
+    beforeEach((done) => {
+      wsdl = {
+        path: '/sunsetriseservice.asmx?WSDL',
+        content: join(__dirname, 'soap/sunsetrise.wsdl'),
+        replace: {
+          'www.webservicex.net': 'localhost:1337'
+        }
+      }
+      server = new SoapServer({
+        port: 1337,
+        wsdl
+      })
+      stub(console, 'warn')
+      server.start()
+        .then(() => {
+          createClient(server.endpoint, (err, _client) => {
+            if (err) {
+              done(err)
+            } else {
+              client = _client
+              done()
+            }
+          })
+        })
+    })
+    afterEach(() => {
+      console.warn.restore()
+      return server.stop()
+    })
+    it('serialises nested object args correctly', (done) => {
+      const response = {
+        GetSunSetRiseTimeResponse: {
+          '@xmlns': 'http://localhost:1337/HolidayService_v2/',
+          GetSunSetRiseTimeResult: {}
+        }
+      }
+      const args = {
+        L: {
+          Latitude: '0',
+          Longitude: '0',
+          SunSetTime: '0',
+          SunRiseTime: '0',
+          TimeZone: '0',
+          Day: '0',
+          Month: '0',
+          Year: '0'
+        }
+      }
+      server
+        .withArgs('GetSunSetRiseTime', args)
+        .resolves(response)
+      client.GetSunSetRiseTime(args, (err, res) => {
+        expect(server.stub)
+          .calledWith('GetSunSetRiseTime', args)
+
+        done(err)
       })
     })
   })
