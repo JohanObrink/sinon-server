@@ -3,7 +3,7 @@ A mock server to answer calls to external systems controlled by a sinon stub
 
 ## Install
 
-```npm install sinon-stub```
+```npm install sinon-server```
 
 ## Use
 
@@ -33,16 +33,19 @@ const options = {
   headers: {'Accept': 'application/json'}
 }
 
-testServer.start().then(() => {
-  const req1 = request(Object.assign({method: 'GET', path: '/'}, options), res => {
-    console.log('status', res.statusCode)
-    console.log('headers', res.headers)
+testServer
+  .start()
+  .then(() => {
+    const req1 = request(Object.assign({method: 'GET', path: '/'}, options), res => {
+      console.log('status', res.statusCode)
+      console.log('headers', res.headers)
 
-    res.setEncoding('utf8')
-    res.on('data', data => console.log(data))
+      res.setEncoding('utf8')
+      res.on('data', data => console.log(data))
+    })
+    req1.end()
   })
-  req1.end()
-})
+  .then(() => testServer.stop())
 ```
 
 ### Example 2
@@ -66,15 +69,18 @@ const options = {
   headers: {'Accept': 'application/json'}
 }
 
-testServer.start().then(() => {
-  const req2 = request(Object.assign({method: 'POST', path: '/users'}, options), res => {
-    console.log('status', res.statusCode)
-    console.log('headers', res.headers)
+testServer
+  .start()
+  .then(() => {
+    const req2 = request(Object.assign({method: 'POST', path: '/users'}, options), res => {
+      console.log('status', res.statusCode)
+      console.log('headers', res.headers)
 
-    res.setEncoding('utf8')
-    res.on('data', data => console.log(data))
+      res.setEncoding('utf8')
+      res.on('data', data => console.log(data))
+    })
+    req2.write(JSON.stringify({foo: 'bar'}))
+    req2.end()
   })
-  req2.write(JSON.stringify({foo: 'bar'}))
-  req2.end()
-})
+.then(() => testServer.stop())
 ```
