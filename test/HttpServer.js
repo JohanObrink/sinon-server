@@ -2,13 +2,11 @@ const chai = require('chai')
 const expect = chai.expect
 const {HttpServer} = require(`${process.cwd()}/lib/`)
 const {spy, stub, match} = require('sinon')
+const {chain} = require('./testhelper')
 
 chai.use(require('chai-http'))
 chai.use(require('sinon-chai'))
 
-function chain (funcs) {
-  return funcs.reduce((promise, func) => promise.then(func), Promise.resolve())
-}
 before(function () {
   this.timeout(60000)
 })
