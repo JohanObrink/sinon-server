@@ -4,6 +4,9 @@
   "description": "A mock server to answer calls to external systems controlled by a sinon stub",
   "main": "lib/index.js",
   "scripts": {
+    "patch-release": "npm version patch && npm publish && git push origin master --follow-tags",
+    "minor-release": "npm version minor && npm publish && git push origin master --follow-tags",
+    "major-release": "npm version major && npm publish && git push origin master --follow-tags",
     "test": "eslint gulpfile.js lib/**/*.js test/**/*.js && mocha test/**/*.js"
   },
   "repository": {
